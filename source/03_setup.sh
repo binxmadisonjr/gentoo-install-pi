@@ -54,6 +54,7 @@ echo "Extracting Pi boot firmware to boot..."
 cp -r firmware/boot/* /mnt/root/boot/
 
 # --- Extract nonfree firmware to mountpoint ---
+mkdir -p /mnt/root/lib/firmware /mnt/root/boot/overlays
 echo "Copying nonfree firmware to /lib/firmware..."
 
 cp -r firmware-nonfree/* /mnt/root/lib/firmware/ || true
