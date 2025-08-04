@@ -5,7 +5,7 @@ set -e
 source "config.env"
 
 # Run package check
-source/01_package_check.sh
+"source/01_package_check.sh"
 
 # Make and change to /build directory
 # Assuming you have made or used git to make parent directory of RASPBERRY_PI_GENTOO
