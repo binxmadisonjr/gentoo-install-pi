@@ -36,12 +36,6 @@ git clone --depth=1 https://github.com/raspberrypi/firmware.git
 echo "Cloning the Raspberry Pi nonfree-firmware..."
 git clone --depth=1 https://github.com/RPi-Distro/firmware-nonfree.git
 
-# --- Make the tarball of just the boot folder ---
-echo "Making creating the bootfs tarball..."
-cd firmware/boot
-tar -cJvf ../bootfs_$(date +%Y%m%d).tar.xz .
-cd ../..
-
 # --- Kernel sources ---
 echo "Cloning the Raspberry Pi kernel sources..."
 git clone --depth=1 https://github.com/raspberrypi/linux.git
