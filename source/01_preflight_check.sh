@@ -17,6 +17,7 @@ echo "Root check complete!"
 # Check for requred packages before starting install
 echo "Checking for required packages..."
 
+MISSING=0
 for cmd in $REQUIRED_CMDS; do
     if ! command -v $cmd &>/dev/null; then
         echo "Missing required command: $cmd"
