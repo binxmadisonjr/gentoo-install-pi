@@ -1,29 +1,11 @@
 #!/bin/bash
 set -e 
 
-# Set USB/SSD/SD device
-# MOVE TO CONFIG.ENV
-DEVICE=/dev/sdX # Make sure to run 'lsblk' to verify
+# Load config
+source "config.env"
 
-#Check for required packages
-REQUIRED_CMDS="wget git parted mkfs.vfat mkfs.btrfs btrfs tar awk sha512sum"
-
-for cmd in $REQUIRED_CMDS; do
-    if ! command -v $cmd &>/dev/null; then
-        echo "Missing required command: $cmd"
-        MISSING=1
-    fi
-done
-
-if [[ $MISSING -eq 1 ]]; then
-    echo "Please install all required packages before running this script."
-    echo "Common package names:"
-    echo "  Debian/Ubuntu: sudo apt update && sudo apt install wget git parted dosfstools btrfs-progs tar gawk coreutils"
-    echo "  Fedora:        sudo dnf install wget git parted dosfstools btrfs-progs tar gawk coreutils"
-    echo "  Arch:          sudo pacman -S wget git parted dosfstools btrfs-progs tar gawk coreutils"
-    exit 1
-fi
-
+# Run package check
+source/01_package_check.sh
 
 # Make and change to /build directory
 # Assuming you have made or used git to make parent directory of RASPBERRY_PI_GENTOO
