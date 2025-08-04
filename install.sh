@@ -2,7 +2,8 @@
 set -e 
 
 # Load config
-source "config.env"
+cp config.env source/config.env
+source "source/config.env"
 
 # Run install
 "source/01_package_check.sh"
