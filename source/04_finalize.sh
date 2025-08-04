@@ -23,10 +23,10 @@ sed -i "s/^KEYMAP=.*/KEYMAP=\"$KEYMAP\"/" "$ROOT/etc/conf.d/keymaps"
 # --- Add network symlink ---
 ln -sf net.lo "$ROOT/etc/init.d/net.end0"
 
-# --- Set up fstab (using fixed PARTUUID from your script, adjust as needed) ---
+# --- Set up fstab ---
 echo "PARTUUID=6c586e13-01   /boot   vfat    defaults,auto,noatime,umask=0022,uid=0,gid=100   0 0" >> "$ROOT/etc/fstab"
 
-# --- Update sshd config for root login (for setup only, remove later for security) ---
+# --- Update sshd config for root login ---
 sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' "$ROOT/etc/ssh/sshd_config"
 
 # --- Optionally set up make.conf with parallelism and binhost ---
