@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e 
-source "../config.env"
+source "config.env"
 
 # Disk setup
 echo "Unmounting any existing mounts (be careful!)"
