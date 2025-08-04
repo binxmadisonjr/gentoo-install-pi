@@ -24,6 +24,22 @@ parted --script $DEVICE \
 
 echo "Partitions created successfully" 
 
+# --- Set the PARTUUID ---
+echo "Setting the PARTUUID..."
+
+fdisk "${DEVICE}" <<EOF &> /dev/null
+p
+x
+i
+0x6c586e13
+r
+p
+w
+EOF
+
+echo "PARTUUID sucessfully set!"
+
+
 # --- Format partitions ---
 echo "Formatting partitions..."
 
