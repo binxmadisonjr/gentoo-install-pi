@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-source "../config.env"
+source "config.env"
 
 # Make and change to /build directory
 echo "Creating working environment..."
