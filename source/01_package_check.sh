@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-source "../config.env"
+source "config.env"
 
 # Check for requred packages before starting install
 for cmd in $REQUIRED_CMDS; do
