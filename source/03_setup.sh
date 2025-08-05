@@ -52,8 +52,8 @@ echo "Partitions formatted succesfully!"
 echo "Creating and mounting partitions..."
 
 mkdir -p /mnt/root 
-mkdir -p /mnt/root/boot
 mount ${DEVICE}2 /mnt/root
+mkdir -p /mnt/root/boot
 mount ${DEVICE}1 /mnt/root/boot
 
 echo "Partitions mounted successfully!"
