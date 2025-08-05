@@ -105,3 +105,16 @@ cd ..
 
 echo "Kernel build and install complete."
 echo "Your Gentoo system base is now ready for chroot configuration."
+
+# --- Mount special filesystems for chroot ---
+echo "Mounting /proc, /sys, /dev, and /run for chroot environment..."
+
+mount --types proc  /proc  /mnt/root/proc
+mount --rbind /sys  /mnt/root/sys
+mount --make-rslave /mnt/root/sys
+mount --rbind /dev  /mnt/root/dev
+mount --make-rslave /mnt/root/dev
+mount --bind /run /mnt/root/run || true
+
+echo "Chroot environment mounts complete."
+echo "Your Gentoo system base is now ready for configuration!"
