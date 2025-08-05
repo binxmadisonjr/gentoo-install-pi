@@ -39,8 +39,8 @@ PORTAGE_BINHOST="https://dev.drassal.net/genpi64/pi64pie_20250115_binpkgs"
 EOF
 
 # --- Optionally add overlay repo configs ---
-mkdir -p "$ROOTFS/etc/portage/repos.conf"
-cat <<EOF > "$ROOTFS/etc/portage/repos.conf/gentoo.conf"
+mkdir -p "$ROOT/etc/portage/repos.conf"
+cat <<EOF > "$ROOT/etc/portage/repos.conf/gentoo.conf"
 [DEFAULT]
 main-repo = gentoo
 
@@ -51,7 +51,7 @@ sync-uri = rsync://rsync.gentoo.org/gentoo-portage
 auto-sync = yes
 EOF
 
-cat <<EOF > "$ROOTFS/etc/portage/repos.conf/genpi64.conf"
+cat <<EOF > "$ROOT/etc/portage/repos.conf/genpi64.conf"
 [DEFAULT]
 main-repo = gentoo
 
