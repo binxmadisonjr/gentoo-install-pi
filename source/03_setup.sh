@@ -18,7 +18,7 @@ echo "Creating partitions..."
 parted --script $DEVICE \
     mklabel msdos \
     mkpart primary fat32 1MiB 513MiB \
-    mkpart primary btrfs 513MiB 100% \
+    mkpart primary ext4 513MiB 100% \
     set 1 boot on \
     set 1 lba on
 
@@ -44,7 +44,7 @@ echo "PARTUUID sucessfully set!"
 echo "Formatting partitions..."
 
 mkfs.vfat -F 32 -n boot ${DEVICE}1
-mkfs.btrfs -f -L root ${DEVICE}2
+mkfs.ext4 -f -L root ${DEVICE}2
 
 echo "Partitions formatted succesfully!"
 
