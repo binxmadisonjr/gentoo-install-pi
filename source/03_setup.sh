@@ -58,6 +58,12 @@ mount ${DEVICE}1 /mnt/root/boot
 
 echo "Partitions mounted successfully!"
 
+# --- Get dynamic PARTUUIDs ---
+PARTUUID_BOOT=$(blkid -s PARTUUID -o value ${DEVICE}1)
+PARTUUID_ROOT=$(blkid -s PARTUUID -o value ${DEVICE}2)
+echo "Boot PARTUUID: $PARTUUID_BOOT"
+echo "Root PARTUUID: $PARTUUID_ROOT"
+
 # --- Extract base system ---
 echo "Extracting stage3 to root..."
 
