@@ -31,11 +31,14 @@ fi
 # --- Add network symlink ---
 ln -sf net.lo "$ROOT/etc/init.d/net.end0"
 
-# --- Set up fstab (dynamic PARTUUIDs) ---
+# --- Set up fstab (dynamic PARTUUIDs + required mounts) ---
 cat <<EOF > "$ROOT/etc/fstab"
 PARTUUID=$PARTUUID_BOOT   /boot   vfat    defaults,auto,noatime,umask=0022,uid=0,gid=100   0 0
-PARTUUID=$PARTUUID_ROOT   /       ext4    defaults,noatime,compress=zstd,ssd,space_cache,subvolid=5,subvol=/   0 1
-EOF
+PARTUUID=$PARTUUID_ROOT   /       ext4    defaults,noatime   0 1
+proc            /proc       proc    defaults          0 0
+sysfs           /sys        sysfs   defaults          0 0
+devtmpfs        /dev        devtmpfs   defaults       0 0
+EO
 
 # --- Update sshd config for root login ---
 sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' "$ROOT/etc/ssh/sshd_config"
@@ -85,6 +88,37 @@ enable_uart=1
 kernel=kernel8.img
 dtoverlay=disable-bt
 EOF
+
+# --- Chroot and run time sync, emerge --sync, install iwctl ---
+echo "Entering chroot to set timezone, sync portage, and install iwctl..."
+
+cat <<'EOFCHROOT' | chroot $ROOT /bin/bash
+set -e
+
+# Set the timezone (America/Chicago)
+echo "Setting timezone to America/Chicago..."
+ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime
+echo "America/Chicago" > /etc/timezone
+
+# Set system time via ntpd or chronyd if available, else warn
+if command -v ntpd >/dev/null 2>&1; then
+  ntpd -gq || true
+elif command -v chronyd >/dev/null 2>&1; then
+  chronyd -q "server pool.ntp.org iburst" || true
+else
+  echo "WARNING: No ntpd or chronyd, time may be off until you set it."
+fi
+
+# Sync the portage tree
+echo "Running emerge --sync..."
+emerge --sync
+
+# Install iwctl (iwd)
+echo "Installing net-wireless/iwd..."
+emerge --ask=n net-wireless/iwd
+
+echo "All chroot configuration complete!"
+EOFCHROOT
 
 # --- Unmount and clean up ---
 echo "Syncing and unmounting..."
