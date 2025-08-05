@@ -61,6 +61,7 @@ echo "Partitions mounted successfully!"
 # --- Extract base system ---
 echo "Extracting stage3 to root..."
 
+cd build
 tar -xJpf stage3-arm64-systemd-*.tar.xz -C /mnt/root --xattrs-include='*.*' --numeric-owner
 
 echo "Stage3 extracted to root successfully!"
