@@ -34,7 +34,7 @@ ln -sf net.lo "$ROOT/etc/init.d/net.end0"
 # --- Set up fstab (dynamic PARTUUIDs) ---
 cat <<EOF > "$ROOT/etc/fstab"
 PARTUUID=$PARTUUID_BOOT   /boot   vfat    defaults,auto,noatime,umask=0022,uid=0,gid=100   0 0
-PARTUUID=$PARTUUID_ROOT   /       btrfs   defaults,noatime,compress=zstd,ssd,space_cache,subvolid=5,subvol=/   0 1
+PARTUUID=$PARTUUID_ROOT   /       ext4    defaults,noatime,compress=zstd,ssd,space_cache,subvolid=5,subvol=/   0 1
 EOF
 
 # --- Update sshd config for root login ---
@@ -75,7 +75,7 @@ auto-sync = yes
 EOF
 
 # --- Create cmdline.txt (dynamic PARTUUID) ---
-CMDLINE="console=serial0,115200 console=tty1 root=PARTUUID=$PARTUUID_ROOT rootfstype=btrfs rootdelay=0 fsck.repair=yes rootwait"
+CMDLINE="console=serial0,115200 console=tty1 root=PARTUUID=$PARTUUID_ROOT rootfstype=ext4 rootdelay=0 fsck.repair=yes rootwait"
 echo "$CMDLINE" > "$BOOT/cmdline.txt"
 
 # --- Create config.txt ---
