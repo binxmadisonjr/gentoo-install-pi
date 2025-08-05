@@ -44,7 +44,7 @@ echo "PARTUUID sucessfully set!"
 echo "Formatting partitions..."
 
 mkfs.vfat -F 32 -n boot ${DEVICE}1
-mkfs.ext4 -f -L root ${DEVICE}2
+mkfs.ext4 -L root ${DEVICE}2
 
 echo "Partitions formatted succesfully!"
 
