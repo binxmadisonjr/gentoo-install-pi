@@ -21,15 +21,8 @@ sed -i "s|^${USER}:[^:]*:|${USER}:${ROOT_PASSWORD_HASHED}:|" "$ROOT/etc/shadow"
 # --- Set hostname ---
 echo "$HOSTNAME" > "$ROOT/etc/hostname"
 
-# --- Set keymap ---
-if [ ! -f "$ROOT/etc/conf.d/keymaps" ]; then
-    echo "KEYMAP=\"$KEYMAP\"" > "$ROOT/etc/conf.d/keymaps"
-else
-    sed -i "s/^KEYMAP=.*/KEYMAP=\"$KEYMAP\"/" "$ROOT/etc/conf.d/keymaps"
-fi
-
-# --- Add network symlink ---
-ln -sf net.lo "$ROOT/etc/init.d/net.end0"
+# --- Set keymap (SystemD ignores OpenRC conf.d, but keep for compatibility) ---
+echo "KEYMAP=\"$KEYMAP\"" > "$ROOT/etc/vconsole.conf"
 
 # --- Set up fstab (dynamic PARTUUIDs + required mounts) ---
 cat <<EOF > "$ROOT/etc/fstab"
@@ -38,7 +31,7 @@ PARTUUID=$PARTUUID_ROOT   /       ext4    defaults,noatime   0 1
 proc            /proc       proc    defaults          0 0
 sysfs           /sys        sysfs   defaults          0 0
 devtmpfs        /dev        devtmpfs   defaults       0 0
-EO
+EOF
 
 # --- Update sshd config for root login ---
 sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' "$ROOT/etc/ssh/sshd_config"
@@ -89,35 +82,28 @@ kernel=kernel8.img
 dtoverlay=disable-bt
 EOF
 
-# --- Chroot and run time sync, emerge --sync, install iwctl ---
-echo "Entering chroot to set timezone, sync portage, and install iwctl..."
+# --- Chroot and finalize setup ---
+echo "Entering chroot to finalize system configuration..."
 
 cat <<'EOFCHROOT' | chroot $ROOT /bin/bash
 set -e
 
-# Set the timezone (America/Chicago)
-echo "Setting timezone to America/Chicago..."
+# Set timezone
 ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime
 echo "America/Chicago" > /etc/timezone
 
-# Set system time via ntpd or chronyd if available, else warn
-if command -v ntpd >/dev/null 2>&1; then
-  ntpd -gq || true
-elif command -v chronyd >/dev/null 2>&1; then
-  chronyd -q "server pool.ntp.org iburst" || true
-else
-  echo "WARNING: No ntpd or chronyd, time may be off until you set it."
-fi
-
-# Sync the portage tree
-echo "Running emerge --sync..."
+# Sync Portage tree
 emerge --sync
 
-# Install iwctl (iwd)
-echo "Installing net-wireless/iwd..."
-emerge --ask=n net-wireless/iwd
+# Install systemd-native networking tools
+emerge --ask=n net-wireless/iwd net-misc/dhcpcd iproute2 wireless-tools
 
-echo "All chroot configuration complete!"
+# Enable services
+systemctl enable iwd.service
+systemctl enable dhcpcd.service
+systemctl enable sshd.service
+
+echo "Systemd networking services enabled (iwd + dhcpcd)."
 EOFCHROOT
 
 # --- Unmount and clean up ---
