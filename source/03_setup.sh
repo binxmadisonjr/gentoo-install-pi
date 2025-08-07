@@ -39,7 +39,6 @@ EOF
 
 echo "PARTUUID sucessfully set!"
 
-
 # --- Format partitions ---
 echo "Formatting partitions..."
 
